@@ -13,7 +13,7 @@ public class Menu {
 
             switch (input) {
                 case "1":
-                    System.out.println(Math.random() + "\n");
+                    System.out.println(Math.floor(Math.random() * (50 - 1 + 1) + 1) + "\n");
                     break;
                 case "2":
                     System.out.println("Enter string");
