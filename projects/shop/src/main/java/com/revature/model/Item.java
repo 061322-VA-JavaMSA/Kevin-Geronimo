@@ -4,13 +4,13 @@ import java.util.Objects;
 
 public class Item {
 
-    enum Status {
+    public enum Stock {
         AVAILABLE, OWNED
     }
 
     private int id;
     private String itemName;
-    private Status status;
+    private Stock stock;
 
     public int getId() {
         return id;
@@ -28,12 +28,12 @@ public class Item {
         this.itemName = itemName;
     }
 
-    public Status getStatus() {
-        return status;
+    public Stock getStatus() {
+        return stock;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setStatus(Stock status) {
+        this.stock = status;
     }
 
     @Override
@@ -41,11 +41,11 @@ public class Item {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return id == item.id && Objects.equals(itemName, item.itemName) && status == item.status;
+        return id == item.id && Objects.equals(itemName, item.itemName) && stock == item.stock;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, itemName, status);
+        return Objects.hash(id, itemName, stock);
     }
 }

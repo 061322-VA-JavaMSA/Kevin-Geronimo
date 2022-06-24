@@ -4,13 +4,26 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Offer {
+    public enum Status {
+        PENDING, ACCEPTED
+    }
     private float amount;
     private Date date;
     private User user;
     private Item item;
 
+    private Status status;
+
     public float getAmount() {
         return amount;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public void setAmount(float amount) {
@@ -46,11 +59,11 @@ public class Offer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Offer offer = (Offer) o;
-        return Float.compare(offer.amount, amount) == 0 && Objects.equals(date, offer.date) && Objects.equals(user, offer.user) && Objects.equals(item, offer.item);
+        return Float.compare(offer.amount, amount) == 0 && Objects.equals(date, offer.date) && Objects.equals(user, offer.user) && Objects.equals(item, offer.item) && status == offer.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(amount, date, user, item);
+        return Objects.hash(amount, date, user, item, status);
     }
 }
