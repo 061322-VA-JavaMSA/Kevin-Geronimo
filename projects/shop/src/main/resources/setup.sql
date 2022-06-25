@@ -6,6 +6,8 @@ drop type if exists role;
 create type role as enum ('customer', 'employee', 'manager');
 create table "user" (
     user_id serial primary key,
+    username varchar(20) not null,
+    password text not null,
     assigned_role role
 );
 
@@ -14,8 +16,8 @@ drop type if exists stock;
 create type stock as enum ('available', 'owned');
 create table item (
     item_id serial primary key,
-    item_name varchar(20),
-    stock stock
+    item_name varchar(20) not null,
+    stock stock not null
 );
 
 drop table if exists offer cascade;
@@ -25,7 +27,7 @@ create table offer (
     user_id integer references "user"(user_id),
     item_id integer references item(item_id),
     offer_date date default current_date,
-    offer_amount numeric(2),
-    status status,
+    offer_amount numeric(2) not null,
+    status status not null,
     primary key (user_id, item_id)
 )

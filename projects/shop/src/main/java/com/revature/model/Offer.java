@@ -7,11 +7,11 @@ public class Offer {
     public enum Status {
         PENDING, ACCEPTED
     }
+
     private float amount;
     private Date date;
     private User user;
     private Item item;
-
     private Status status;
 
     public float getAmount() {
