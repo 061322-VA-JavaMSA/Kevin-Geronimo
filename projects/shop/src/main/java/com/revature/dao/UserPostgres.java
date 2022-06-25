@@ -6,7 +6,7 @@ import com.revature.util.ConnectionUtil;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 
 public class UserPostgres implements Dao<User> {
@@ -55,11 +55,12 @@ public class UserPostgres implements Dao<User> {
             ex.printStackTrace();
         }
 
-        return user;    }
+        return user;
+    }
 
     @Override
-    public Collection<User> getAll() {
-        Collection<User> users = new ArrayList<>();
+    public List<User> getAll() {
+        List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {

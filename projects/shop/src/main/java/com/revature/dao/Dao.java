@@ -1,12 +1,15 @@
 package com.revature.dao;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 
 public interface Dao<T> {
-    public T get(int id);
-    Collection<T> getAll();
-    public T save(T t);
+    T get(int id);
+
+    List<T> getAll();
+
+    T save(T t);
+
     boolean update(T t);
+
     boolean delete(int id);
 }
