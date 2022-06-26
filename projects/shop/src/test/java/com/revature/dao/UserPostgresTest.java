@@ -2,7 +2,9 @@ package com.revature.dao;
 
 import com.revature.model.User;
 import com.revature.util.ConnectionUtil;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -39,16 +41,31 @@ public class UserPostgresTest {
                 INSERT INTO "user" (username, password, assigned_role) VALUES ('courage', '1234567', 'EMPLOYEE');
                 """;
 
-        // can't use try-with-resources here as that will close the connection and reset the schema back to public
-        Connection c = ConnectionUtil.getConnectionFromFile();
-        Statement stmt = c.createStatement();
+        Connection connection = ConnectionUtil.getConnectionFromFile();
+        Statement stmt = connection.createStatement();
         stmt.executeUpdate(sql);
+    }
+
+    @AfterAll
+    static void teardown() throws SQLException, IOException {
+        String sql = "DROP SCHEMA IF EXISTS test CASCADE;";
+
+        Connection connection = ConnectionUtil.getConnectionFromFile();
+        Statement stmt = connection.createStatement();
+        stmt.executeUpdate(sql);
+    }
+
+    @BeforeEach
+    void setSchema() throws SQLException, IOException {
+        // get the singleton connection before the Dao is able to in order to change the schema
+        Connection connection = ConnectionUtil.getConnectionFromFile();
+        connection.setSchema("test");
     }
 
     @Test
     void testGetById() {
         User actualUser = userPostgres.get(1);
-        User expectedUser = new User(1, "kevin", "sadfdfkj", User.Role.MANAGER);
+        User expectedUser = new User(1, "kevin", "1234", User.Role.MANAGER);
 
         assertEquals(expectedUser, actualUser);
     }
@@ -56,7 +73,7 @@ public class UserPostgresTest {
     @Test
     void testGetByUsername() {
         User actualUser = userPostgres.get("patrick");
-        User expectedUser = new User(3, "patrick", "sadf234kj", User.Role.CUSTOMER);
+        User expectedUser = new User(3, "patrick", "123456", User.Role.CUSTOMER);
 
         assertEquals(expectedUser, actualUser);
     }
