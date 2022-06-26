@@ -12,6 +12,16 @@ public class Item {
     private String itemName;
     private Stock stock;
 
+    public Item() {
+        super();
+    }
+
+    public Item(int id, String itemName, Stock stock) {
+        this.id = id;
+        this.itemName = itemName;
+        this.stock = stock;
+    }
+
     public int getId() {
         return id;
     }
@@ -28,12 +38,12 @@ public class Item {
         this.itemName = itemName;
     }
 
-    public Stock getStatus() {
+    public Stock getStock() {
         return stock;
     }
 
-    public void setStatus(Stock status) {
-        this.stock = status;
+    public void setStock(Stock stock) {
+        this.stock = stock;
     }
 
     @Override
