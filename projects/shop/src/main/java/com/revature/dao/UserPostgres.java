@@ -14,7 +14,7 @@ public class UserPostgres implements Dao<User> {
     @Override
     public User get(int id) {
         User user = null;
-        String sql = "SELECT * FROM user WHERE user_id = ?;";
+        String sql = "SELECT * FROM \"user\" WHERE user_id = ?;";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
             PreparedStatement ps = c.prepareStatement(sql);
@@ -37,7 +37,7 @@ public class UserPostgres implements Dao<User> {
 
     public User get(String username) {
         User user = null;
-        String sql = "SELECT * FROM user WHERE username = ?;";
+        String sql = "SELECT * FROM \"user\" WHERE username = ?;";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
             PreparedStatement ps = c.prepareStatement(sql);
@@ -61,7 +61,7 @@ public class UserPostgres implements Dao<User> {
     @Override
     public List<User> getAll() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM user";
+        String sql = "SELECT * FROM \"user\"";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
             Statement s = c.createStatement();
@@ -86,7 +86,7 @@ public class UserPostgres implements Dao<User> {
     @Override
     public User save(User user) {
         String sql = "INSERT INTO "
-                + "user(username, password, role) "
+                + "\"user\"(username, password, role) "
                 + "VALUES(?, ?, ?)";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
@@ -110,7 +110,7 @@ public class UserPostgres implements Dao<User> {
 
     @Override
     public boolean update(User user) {
-        String sql = "UPDATE user "
+        String sql = "UPDATE \"user\" "
                 + "SET "
                 + "username = ?, "
                 + "password = ?, "
@@ -141,7 +141,7 @@ public class UserPostgres implements Dao<User> {
 
     @Override
     public boolean delete(int id) {
-        String sql = "DELETE FROM user WHERE user_id = ?";
+        String sql = "DELETE FROM \"user\" WHERE user_id = ?";
 
         int rowsChanged = -1;
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
