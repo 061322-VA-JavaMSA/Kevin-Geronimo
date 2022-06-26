@@ -9,15 +9,17 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UserPostgresTest {
 
     private final UserPostgres userPostgres = new UserPostgres();
 
     @BeforeAll
-    static void setTestTable() throws SQLException, IOException {
+    static void createTestTable() throws SQLException, IOException {
         String sql = """
                 DROP SCHEMA IF EXISTS test CASCADE;
                 CREATE SCHEMA test;
@@ -31,8 +33,10 @@ public class UserPostgresTest {
                     password text not null,
                     assigned_role role
                 );
-                INSERT INTO "user" (username, password, assigned_role) VALUES ('kevin', 'sadfdfkj', 'MANAGER');
-                INSERT INTO "user" (username, password, assigned_role) VALUES ('cartman', 'adsffgg', 'CUSTOMER');
+                INSERT INTO "user" (username, password, assigned_role) VALUES ('kevin', '1234', 'MANAGER');
+                INSERT INTO "user" (username, password, assigned_role) VALUES ('cartman', '12345', 'CUSTOMER');
+                INSERT INTO "user" (username, password, assigned_role) VALUES ('patrick', '123456', 'CUSTOMER');
+                INSERT INTO "user" (username, password, assigned_role) VALUES ('courage', '1234567', 'EMPLOYEE');
                 """;
 
         // can't use try-with-resources here as that will close the connection and reset the schema back to public
@@ -42,10 +46,53 @@ public class UserPostgresTest {
     }
 
     @Test
-    void testGet() {
+    void testGetById() {
         User actualUser = userPostgres.get(1);
         User expectedUser = new User(1, "kevin", "sadfdfkj", User.Role.MANAGER);
 
         assertEquals(expectedUser, actualUser);
+    }
+
+    @Test
+    void testGetByUsername() {
+        User actualUser = userPostgres.get("patrick");
+        User expectedUser = new User(3, "patrick", "sadf234kj", User.Role.CUSTOMER);
+
+        assertEquals(expectedUser, actualUser);
+    }
+
+    @Test
+    void testGetAllUsers() {
+        List<User> actualUsers = userPostgres.getAll();
+        List<User> expectedUsers = new ArrayList<>();
+        expectedUsers.add(new User(1, "kevin", "1234", User.Role.MANAGER));
+        expectedUsers.add(new User(2, "cartman", "12345", User.Role.CUSTOMER));
+        expectedUsers.add(new User(3, "patrick", "123456", User.Role.CUSTOMER));
+        expectedUsers.add(new User(4, "courage", "1234567", User.Role.EMPLOYEE));
+
+        assertArrayEquals(expectedUsers.toArray(), actualUsers.toArray());
+    }
+
+    @Test
+    void testInsertUser() {
+        User user = new User();
+        user.setUsername("naruto");
+        user.setPassword("12345rty");
+        user.setRole(User.Role.EMPLOYEE);
+
+        User actualUser = userPostgres.insert(user);
+
+        assertEquals(5, actualUser.getId());
+    }
+
+    @Test
+    void testUpdateUser() {
+        User user = new User(4, "ichigo", "654321", User.Role.MANAGER);
+        assertTrue(userPostgres.update(user));
+    }
+
+    @Test
+    void testDeleteUser() {
+        assertTrue(userPostgres.delete(2));
     }
 }

@@ -7,7 +7,7 @@ public interface Dao<T> {
 
     List<T> getAll();
 
-    T save(T t);
+    T insert(T t);
 
     boolean update(T t);
 
