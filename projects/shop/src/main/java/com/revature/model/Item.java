@@ -58,4 +58,13 @@ public class Item {
     public int hashCode() {
         return Objects.hash(id, itemName, stock);
     }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "id=" + id +
+                ", itemName='" + itemName + '\'' +
+                ", stock=" + stock +
+                '}';
+    }
 }

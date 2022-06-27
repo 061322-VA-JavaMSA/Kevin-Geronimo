@@ -1,23 +1,23 @@
 package com.revature.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Offer {
     private User user;
     private Item item;
-    private float amount;
-    private Date date;
+    private double amount;
+    private LocalDate date;
 
     public Offer() {
         super();
     }
 
-    public Offer(User user, Item item, float amount, Date date) {
+    public Offer(User user, Item item, LocalDate date, float amount) {
         this.user = user;
         this.item = item;
-        this.amount = amount;
         this.date = date;
+        this.amount = amount;
     }
 
     public User getUser() {
@@ -36,7 +36,7 @@ public class Offer {
         this.item = item;
     }
 
-    public float getAmount() {
+    public double getAmount() {
         return amount;
     }
 
@@ -44,11 +44,11 @@ public class Offer {
         this.amount = amount;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -57,11 +57,21 @@ public class Offer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Offer offer = (Offer) o;
-        return Float.compare(offer.amount, amount) == 0 && Objects.equals(user, offer.user) && Objects.equals(item, offer.item) && Objects.equals(date, offer.date);
+        return Double.compare(offer.amount, amount) == 0 && Objects.equals(user, offer.user) && Objects.equals(item, offer.item) && Objects.equals(date, offer.date);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(user, item, amount, date);
+    }
+
+    @Override
+    public String toString() {
+        return "Offer{" +
+                "user=" + user +
+                ", item=" + item +
+                ", amount=" + amount +
+                ", date=" + date +
+                '}';
     }
 }

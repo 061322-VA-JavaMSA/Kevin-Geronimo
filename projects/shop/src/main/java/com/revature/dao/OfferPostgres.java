@@ -7,11 +7,30 @@ import com.revature.util.ConnectionUtil;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class OfferPostgres implements Dao<Offer> {
+
+    private String schema = "public";
+
+    public OfferPostgres() {
+        super();
+    }
+
+    public OfferPostgres(String schema) {
+        this.schema = schema;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
     @Override
     public Offer get(int userId) {
@@ -19,6 +38,7 @@ public class OfferPostgres implements Dao<Offer> {
         String sql = "SELECT * FROM offer where user_id=?;";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, userId);
 
@@ -26,12 +46,12 @@ public class OfferPostgres implements Dao<Offer> {
 
             if (rs.next()) {
                 int itemId = rs.getInt("item_id");
-                Date offerDate = rs.getDate("offer_date");
+                LocalDate offerDate = rs.getDate("offer_date").toLocalDate();
                 float offerAmount = rs.getFloat("offer_amount");
 
-                User user = new UserPostgres().get(userId);
-                Item item = new ItemPostgres().get(itemId);
-                offer = new Offer(user, item, offerAmount, offerDate);
+                User user = new UserPostgres(schema).get(userId);
+                Item item = new ItemPostgres(schema).get(itemId);
+                offer = new Offer(user, item, offerDate, offerAmount);
             }
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
@@ -45,6 +65,7 @@ public class OfferPostgres implements Dao<Offer> {
         String sql = "SELECT * FROM offer where user_id=? AND item_id=?;";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, userId);
             ps.setInt(2, itemId);
@@ -52,12 +73,12 @@ public class OfferPostgres implements Dao<Offer> {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                Date offerDate = rs.getDate("offer_date");
+                LocalDate offerDate = rs.getDate("offer_date").toLocalDate();
                 float offerAmount = rs.getFloat("offer_amount");
 
-                User user = new UserPostgres().get(userId);
-                Item item = new ItemPostgres().get(itemId);
-                offer = new Offer(user, item, offerAmount, offerDate);
+                User user = new UserPostgres(schema).get(userId);
+                Item item = new ItemPostgres(schema).get(itemId);
+                offer = new Offer(user, item, offerDate, offerAmount);
             }
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
@@ -72,18 +93,19 @@ public class OfferPostgres implements Dao<Offer> {
         String sql = "SELECT * FROM offer";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(sql);
 
             while (rs.next()) {
                 int userId = rs.getInt("user_id");
                 int itemId = rs.getInt("item_id");
-                Date offerDate = rs.getDate("offer_date");
+                LocalDate offerDate = rs.getDate("offer_date").toLocalDate();
                 float offerAmount = rs.getFloat("offer_amount");
 
-                User user = new UserPostgres().get(userId);
-                Item item = new ItemPostgres().get(itemId);
-                Offer offer = new Offer(user, item, offerAmount, offerDate);
+                User user = new UserPostgres(schema).get(userId);
+                Item item = new ItemPostgres(schema).get(itemId);
+                Offer offer = new Offer(user, item, offerDate, offerAmount);
                 offers.add(offer);
             }
         } catch (SQLException | IOException ex) {
@@ -97,15 +119,16 @@ public class OfferPostgres implements Dao<Offer> {
     public Offer insert(Offer offer) {
         String sql = """
                 INSERT INTO offer (user_id, item_id, offer_amount)
-                VALUES (?, ?, ?)
+                VALUES (?, ?, money(?::numeric))
                 returning user_id, item_id;
                 """;
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, offer.getUser().getId());
             ps.setInt(2, offer.getItem().getId());
-            ps.setFloat(3, offer.getAmount());
+            ps.setDouble(3, offer.getAmount());
 
             ResultSet rs = ps.executeQuery(); // return the id generated by the database
             if (rs.next()) {
@@ -123,15 +146,16 @@ public class OfferPostgres implements Dao<Offer> {
 
     @Override
     public boolean update(Offer offer) {
-        String sql = "UPDATE offer SET offer_date = ?, offer_amount = ? WHERE user_id = ? AND item_id = ?;";
+        String sql = "UPDATE offer SET offer_date = ?, offer_amount = money(?::numeric) WHERE user_id = ? AND item_id = ?;";
 
         int rowsChanged = -1;
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
 
-            ps.setDate(1, (Date) offer.getDate());
-            ps.setFloat(2, offer.getAmount());
+            ps.setDate(1, Date.valueOf(offer.getDate()));
+            ps.setDouble(2, offer.getAmount());
             ps.setInt(3, offer.getUser().getId());
             ps.setInt(4, offer.getItem().getId());
 
@@ -152,6 +176,7 @@ public class OfferPostgres implements Dao<Offer> {
 
         int rowsChanged = -1;
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
 
             ps.setInt(1, userId);
@@ -171,6 +196,7 @@ public class OfferPostgres implements Dao<Offer> {
 
         int rowsChanged = -1;
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
 
             ps.setInt(1, userId);

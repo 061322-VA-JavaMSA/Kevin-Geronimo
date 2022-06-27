@@ -4,7 +4,6 @@ import com.revature.model.User;
 import com.revature.util.ConnectionUtil;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class UserPostgresTest {
 
-    private final UserPostgres userPostgres = new UserPostgres();
+    private final UserPostgres userPostgres = new UserPostgres("test");
 
     @BeforeAll
     static void createTestTable() throws SQLException, IOException {
@@ -53,13 +52,6 @@ public class UserPostgresTest {
         Connection connection = ConnectionUtil.getConnectionFromFile();
         Statement stmt = connection.createStatement();
         stmt.executeUpdate(sql);
-    }
-
-    @BeforeEach
-    void setSchema() throws SQLException, IOException {
-        // get the singleton connection before the Dao is able to in order to change the schema
-        Connection connection = ConnectionUtil.getConnectionFromFile();
-        connection.setSchema("test");
     }
 
     @Test

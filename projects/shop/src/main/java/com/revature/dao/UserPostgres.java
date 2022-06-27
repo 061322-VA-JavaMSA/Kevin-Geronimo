@@ -10,6 +10,23 @@ import java.util.List;
 
 
 public class UserPostgres implements Dao<User> {
+    private String schema = "public";
+
+    public UserPostgres() {
+        super();
+    }
+
+    public UserPostgres(String schema) {
+        this.schema = schema;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
     @Override
     public User get(int id) {
@@ -17,6 +34,7 @@ public class UserPostgres implements Dao<User> {
         String sql = "SELECT * FROM \"user\" WHERE user_id = ?;";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, id);
 
@@ -40,6 +58,7 @@ public class UserPostgres implements Dao<User> {
         String sql = "SELECT * FROM \"user\" WHERE username = ?;";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, username);
 
@@ -64,6 +83,7 @@ public class UserPostgres implements Dao<User> {
         String sql = "SELECT * FROM \"user\"";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(sql);
 
@@ -90,6 +110,7 @@ public class UserPostgres implements Dao<User> {
                 + "VALUES(?, ?, ?::role) returning user_id";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
@@ -121,6 +142,7 @@ public class UserPostgres implements Dao<User> {
         int rowsChanged = -1;
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
 
             ps.setString(1, user.getUsername());
@@ -145,6 +167,7 @@ public class UserPostgres implements Dao<User> {
 
         int rowsChanged = -1;
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
 
             ps.setInt(1, id);

@@ -10,6 +10,23 @@ import java.util.List;
 
 
 public class ItemPostgres implements Dao<Item> {
+    private String schema = "public";
+
+    public ItemPostgres() {
+        super();
+    }
+
+    public ItemPostgres(String schema) {
+        this.schema = schema;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
     @Override
     public Item get(int id) {
@@ -17,6 +34,7 @@ public class ItemPostgres implements Dao<Item> {
         String sql = "SELECT * FROM item WHERE item_id = ?;";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, id);
 
@@ -40,6 +58,7 @@ public class ItemPostgres implements Dao<Item> {
         String sql = "SELECT * FROM item";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             Statement s = c.createStatement();
             ResultSet rs = s.executeQuery(sql);
 
@@ -65,6 +84,7 @@ public class ItemPostgres implements Dao<Item> {
                 + "VALUES(?, ?::stock) returning item_id";
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, Item.getItemName());
             ps.setString(2, Item.getStock().name());
@@ -94,6 +114,7 @@ public class ItemPostgres implements Dao<Item> {
         int rowsChanged = -1;
 
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
 
             ps.setString(1, Item.getItemName());
@@ -117,6 +138,7 @@ public class ItemPostgres implements Dao<Item> {
 
         int rowsChanged = -1;
         try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
             PreparedStatement ps = c.prepareStatement(sql);
 
             ps.setInt(1, id);
