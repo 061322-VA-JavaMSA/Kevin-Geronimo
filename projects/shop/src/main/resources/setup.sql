@@ -23,14 +23,11 @@ create table item
 );
 
 drop table if exists offer cascade;
-drop type if exists status;
-create type status as enum ('PENDING', 'ACCEPTED');
 create table offer
 (
     user_id      integer references "user" (user_id),
     item_id      integer references item (item_id),
     offer_date   date default current_date,
-    offer_amount numeric(2) not null,
-    status       status     not null,
+    offer_amount money not null,
     primary key (user_id, item_id)
 )

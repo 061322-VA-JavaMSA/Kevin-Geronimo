@@ -4,37 +4,19 @@ import java.util.Date;
 import java.util.Objects;
 
 public class Offer {
-    public enum Status {
-        PENDING, ACCEPTED
-    }
-
-    private float amount;
-    private Date date;
     private User user;
     private Item item;
-    private Status status;
+    private float amount;
+    private Date date;
 
-    public float getAmount() {
-        return amount;
+    public Offer() {
+        super();
     }
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public void setAmount(float amount) {
+    public Offer(User user, Item item, float amount, Date date) {
+        this.user = user;
+        this.item = item;
         this.amount = amount;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -54,16 +36,32 @@ public class Offer {
         this.item = item;
     }
 
+    public float getAmount() {
+        return amount;
+    }
+
+    public void setAmount(float amount) {
+        this.amount = amount;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Offer offer = (Offer) o;
-        return Float.compare(offer.amount, amount) == 0 && Objects.equals(date, offer.date) && Objects.equals(user, offer.user) && Objects.equals(item, offer.item) && status == offer.status;
+        return Float.compare(offer.amount, amount) == 0 && Objects.equals(user, offer.user) && Objects.equals(item, offer.item) && Objects.equals(date, offer.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(amount, date, user, item, status);
+        return Objects.hash(user, item, amount, date);
     }
 }
