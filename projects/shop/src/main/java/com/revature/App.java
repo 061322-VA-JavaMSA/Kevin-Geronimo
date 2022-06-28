@@ -42,38 +42,76 @@ public class App {
                     continue;
                 }
 
+                label:
                 while (true) {
                     UserView.userMenuScreen(user.getUsername());
                     String menuInput = scanner.nextLine();
 
-                    if (menuInput.equals("1")) {
-                        List<Offer> offers = new OfferPostgres().getAll();
-                        logger.info(offers);
-                    } else if (menuInput.equals("3")) {
-                        List<Item> items = new ItemPostgres().getAll();
-                        logger.info("--------INVENTORY--------");
-                        for (Item item : items) {
-                            logger.info(String.format("Item: %s | Stock: %s", item.getItemName(), item.getStock()));
+                    switch (menuInput) {
+                        case "1": {
+                            List<Offer> offers = new OfferPostgres().getAll();
+                            User finalUser = user;
+                            List<Offer> filtered_offers = offers.stream().filter((offer) -> {
+                                return offer.getUser().equals(finalUser) && offer.getItem().getStock().equals(Item.Stock.OWNED);
+                            }).toList();
+
+                            logger.info("----------------------MY ITEMS-------------------------");
+                            for (Offer offer : filtered_offers) {
+                                logger.info("Item: " + offer.getItem().getItemName() + " | Purchase date: " + offer.getDate());
+                            }
+                            logger.info("");
+
+                            break;
                         }
+                        case "2": {
+                            List<Offer> offers = new OfferPostgres().getAll();
+                            User finalUser = user;
+                            List<Offer> filtered_offers = offers.stream().filter((offer) -> {
+                                return offer.getUser().equals(finalUser) && offer.getItem().getStock().equals(Item.Stock.AVAILABLE);
+                            }).toList();
 
-                        logger.info("""
-                                ------------------------
-                                1) Menu
-                                2) Make an offer
-                                """);
-
-                        String inventoryInput = scanner.nextLine();
-
-                        if (inventoryInput.equals("2")) {
-                            logger.info("---------MAKE AN OFFER----------");
-                            logger.info("Item: ");
-                            String itemInput = scanner.nextLine();
-                            logger.info("Offer amount: ");
-                            String offerInput = scanner.nextLine();
-
-                            List<Item> i2 = items.stream().filter((i) -> i.getItemName().equals(itemInput)).toList();
-                            Offer offer = new Offer(user, i2.get(0), LocalDate.now(), Double.parseDouble(offerInput));
+                            logger.info("----------------------MY PENDING OFFERS-------------------------");
+                            for (Offer offer : filtered_offers) {
+                                logger.info("Item: " + offer.getItem().getItemName() + " | Offer Amount: " + offer.getAmount() + " | Offer Date: " + offer.getDate());
+                            }
+                            logger.info("");
+                            break;
                         }
+                        case "3":
+                            List<Item> items = new ItemPostgres().getAll();
+                            logger.info("--------INVENTORY--------");
+                            for (Item item : items) {
+                                if (item.getStock().equals(Item.Stock.AVAILABLE)) {
+                                    logger.info(String.format("Item: %s | Stock: %s", item.getItemName(), item.getStock()));
+                                }
+                            }
+
+                            logger.info("""
+                                    ------------------------
+                                    1) Menu
+                                    2) Make an offer
+                                    """);
+
+                            String inventoryInput = scanner.nextLine();
+
+                            if (inventoryInput.equals("2")) {
+                                logger.info("---------MAKE AN OFFER----------");
+                                logger.info("Item: ");
+                                String itemInput = scanner.nextLine();
+                                logger.info("Offer amount: ");
+                                String offerInput = scanner.nextLine();
+
+                                List<Item> i2 = items.stream().filter((i) -> i.getItemName().equals(itemInput)).toList();
+                                Offer offer = new Offer(user, i2.get(0), LocalDate.now(), Double.parseDouble(offerInput));
+                                new OfferPostgres().insert(offer);
+                            }
+                            break;
+                        case "0":
+                            logger.info("Thank you for shopping!\n");
+                            break label;
+                        default:
+                            logger.info("Please choose 1, 2, 3 or 4");
+                            break;
                     }
                 }
 

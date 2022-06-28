@@ -16,8 +16,8 @@ public class UserView {
 
     public static void userMenuScreen(String username) {
         logger.info(String.format("""
-                --------MENU--------
-                Customer: %s
+                -------------MENU---------------
+                Customer: %s        0) logout
                                 
                 1) My items
                 2) My Pending offers
