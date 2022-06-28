@@ -13,7 +13,7 @@ public class Offer {
         super();
     }
 
-    public Offer(User user, Item item, LocalDate date, float amount) {
+    public Offer(User user, Item item, LocalDate date, double amount) {
         this.user = user;
         this.item = item;
         this.date = date;
