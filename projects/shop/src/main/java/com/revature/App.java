@@ -50,11 +50,7 @@ public class App {
                 } else if (user.getRole().equals(User.Role.MANAGER)) {
                     logger.info(String.format("""
                             -------------MENU---------------
-                            Manager: %s        0) logout
-                                            
-                            1) My items
-                            2) My Pending offers
-                            3) Available items
+                            Manager: %s        0) Logout
                             """, user.getUsername()));
                     logger.info("Manger view not yet implemented\n");
                 }
@@ -86,7 +82,7 @@ public class App {
         while (true) {
             logger.info(String.format("""
                     -------------MENU---------------
-                    Customer: %s        0) logout
+                    Customer: %s        0) Logout
                                     
                     1) My items
                     2) My Pending offers
@@ -104,7 +100,7 @@ public class App {
 
                     logger.info("----------------------MY ITEMS-------------------------");
                     for (Offer offer : filtered_offers) {
-                        logger.info("Item: " + offer.getItem().getItemName() + " | Purchase date: " + offer.getDate());
+                        logger.info(String.format("%10s%10s", offer.getItem().getItemName(), offer.getItem().getStock()));
                     }
                     logger.info("");
 
@@ -116,19 +112,19 @@ public class App {
                         return offer.getUser().equals(user) && offer.getItem().getStock().equals(Item.Stock.AVAILABLE);
                     }).toList();
 
-                    logger.info("----------------------MY PENDING OFFERS-------------------------");
+                    logger.info("---------------------------MY PENDING OFFERS-------------------------------");
                     for (Offer offer : filtered_offers) {
-                        logger.info("Item: " + offer.getItem().getItemName() + " | Offer Amount: " + offer.getAmount() + " | Offer Date: " + offer.getDate());
+                        logger.info(String.format("%-30s $%-30s %-30s", offer.getItem().getItemName(), offer.getItem().getStock(), offer.getDate()));
                     }
                     logger.info("");
                     break;
                 }
                 case "3":
                     List<Item> items = new ItemPostgres().getAll();
-                    logger.info("--------INVENTORY--------");
+                    logger.info("---------------INVENTORY-----------------");
                     for (Item item : items) {
                         if (item.getStock().equals(Item.Stock.AVAILABLE)) {
-                            logger.info(String.format("Item: %s | Stock: %s", item.getItemName(), item.getStock()));
+                            logger.info(String.format("%-30s %-30s", item.getItemName(), item.getStock()));
                         }
                     }
 
