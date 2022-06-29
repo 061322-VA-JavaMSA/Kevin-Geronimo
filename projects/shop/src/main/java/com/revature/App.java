@@ -98,9 +98,10 @@ public class App {
                         return offer.getUser().equals(user) && offer.getItem().getStock().equals(Item.Stock.OWNED);
                     }).toList();
 
-                    logger.info("----------------------MY ITEMS-------------------------");
+                    logger.info("----------MY ITEMS----------");
+                    logger.info(String.format("%-30s", "ITEM"));
                     for (Offer offer : filtered_offers) {
-                        logger.info(String.format("%10s%10s", offer.getItem().getItemName(), offer.getItem().getStock()));
+                        logger.info(String.format("%-30s", offer.getItem().getItemName()));
                     }
                     logger.info("");
 
@@ -113,8 +114,9 @@ public class App {
                     }).toList();
 
                     logger.info("---------------------------MY PENDING OFFERS-------------------------------");
+                    logger.info(String.format("%-30s %-30s %-30s", "ITEM", "OFFER AMOUNT", "DATE"));
                     for (Offer offer : filtered_offers) {
-                        logger.info(String.format("%-30s $%-30s %-30s", offer.getItem().getItemName(), offer.getItem().getStock(), offer.getDate()));
+                        logger.info(String.format("%-30s $%-30.2f %-30s", offer.getItem().getItemName(), offer.getAmount(), offer.getDate()));
                     }
                     logger.info("");
                     break;
@@ -122,6 +124,7 @@ public class App {
                 case "3":
                     List<Item> items = new ItemPostgres().getAll();
                     logger.info("---------------INVENTORY-----------------");
+                    logger.info(String.format("%-30s %-30s", "ITEM", "STOCK"));
                     for (Item item : items) {
                         if (item.getStock().equals(Item.Stock.AVAILABLE)) {
                             logger.info(String.format("%-30s %-30s", item.getItemName(), item.getStock()));
@@ -169,7 +172,7 @@ public class App {
         while (true) {
             logger.info(String.format("""
                     -------------MENU---------------
-                    Employee: %s        0) logout
+                    Employee: %s        0) Logout
                                     
                     1) View all Offers
                     2) View all Items
@@ -180,19 +183,20 @@ public class App {
             switch (menuInput) {
                 case "1": {
                     List<Offer> offers = new OfferPostgres().getAll();
-                    logger.info("----------------------ALL OFFERS-------------------------");
+                    logger.info("-".repeat(62) + "ALL OFFERS" + "-".repeat(62)); //java 11+ only for string repeat :(
+                    logger.info(String.format("%-30s %-30s %-30s %-30s", "CUSTOMER", "ITEM", "OFFER AMOUNT", "DATE"));
                     for (Offer offer : offers) {
-                        logger.info("Item: " + offer.getItem().getItemName()
-                                + " | Customer: " + offer.getUser().getUsername()
-                                + " | Offer Amount: " + offer.getAmount()
-                                + " | Offer Date: " + offer.getDate()
-                                + " | Item stock: " + offer.getItem().getStock());
+                        logger.info(String.format("%-30s %-30s $%-30s %-30s %-30s",
+                                offer.getUser().getUsername(),
+                                offer.getItem().getItemName(),
+                                offer.getAmount(),
+                                offer.getDate(),
+                                offer.getItem().getStock()));
                     }
                     logger.info("""
-                            ------------------------
-                            1) Accept Offer
+                            --------------------------------
+                            1) Accept Offer          3) Menu
                             2) Reject Offer
-                            3) Menu
                             """);
 
                     String allOffersInput = scanner.nextLine();
@@ -261,7 +265,50 @@ public class App {
                     break;
                 }
                 case "2": {
-                    logger.info("All items view not yet implemented");
+                    List<Item> items = new ItemPostgres().getAll();
+                    logger.info("---------------INVENTORY-----------------");
+                    logger.info(String.format("%-30s %-30s", "ITEM", "STOCK"));
+                    for (Item item : items) {
+                        logger.info(String.format("%-30s %-30s", item.getItemName(), item.getStock()));
+                    }
+
+                    logger.info("""
+                            ------------------------
+                            1) Add Item
+                            2) Remove Item
+                            """);
+
+                    String inventoryInput = scanner.nextLine();
+                    switch (inventoryInput) {
+                        case "1": {
+                            logger.info("---------ADD ITEM----------");
+                            logger.info("Item name: ");
+                            String itemNameInput = scanner.nextLine();
+
+                            Item item = new Item();
+                            item.setItemName(itemNameInput);
+                            item.setStock(Item.Stock.AVAILABLE);
+                            new ItemPostgres().insert(item);
+                            break;
+                        }
+                        case "2": {
+                            logger.info("---------REMOVE ITEM----------");
+                            logger.info("Item name: ");
+                            String itemNameInput = scanner.nextLine();
+
+                            Item item = new ItemPostgres().get(itemNameInput);
+
+                            if (item != null && item.getStock().equals(Item.Stock.AVAILABLE)) {
+                                new ItemPostgres().delete(item.getId());
+                            } else {
+                                logger.info("\nNo item found with that name or is owned.\n");
+                            }
+                            break;
+                        }
+                        default:
+                            logger.info("Please choose 1, or 2");
+                            break;
+                    }
                     break;
                 }
                 case "0":

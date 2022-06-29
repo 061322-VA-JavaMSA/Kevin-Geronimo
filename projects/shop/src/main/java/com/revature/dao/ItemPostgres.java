@@ -52,6 +52,30 @@ public class ItemPostgres implements Dao<Item> {
         return item;
     }
 
+    // TODO: this method needs a test case
+    public Item get(String itemName) {
+        Item item = null;
+        String sql = "SELECT * FROM item WHERE item_name = ?;";
+
+        try (Connection c = ConnectionUtil.getConnectionFromFile()) {
+            c.setSchema(schema);
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, itemName);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Item.Stock stock = Item.Stock.valueOf(rs.getString("stock"));
+                int id = rs.getInt("item_id");
+                item = new Item(id, itemName, stock);
+            }
+        } catch (SQLException | IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return item;
+    }
+
     @Override
     public List<Item> getAll() {
         List<Item> items = new ArrayList<>();
