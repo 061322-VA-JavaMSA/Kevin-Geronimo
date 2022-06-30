@@ -4,6 +4,8 @@ import com.revature.model.Item;
 import com.revature.model.Offer;
 import com.revature.model.User;
 import com.revature.util.ConnectionUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.*;
@@ -13,7 +15,7 @@ import java.util.List;
 
 
 public class OfferPostgres implements Dao<Offer> {
-
+    private static final Logger logger = LogManager.getLogger(OfferPostgres.class);
     private String schema = "public";
 
     public OfferPostgres() {
@@ -34,6 +36,7 @@ public class OfferPostgres implements Dao<Offer> {
 
     @Override
     public Offer get(int userId) {
+        logger.trace("Called OfferPostgres get method");
         Offer offer = null;
         String sql = "SELECT * FROM offer where user_id=?;";
 
@@ -54,13 +57,14 @@ public class OfferPostgres implements Dao<Offer> {
                 offer = new Offer(user, item, offerDate, offerAmount);
             }
         } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return offer;
     }
 
     public Offer get(int userId, int itemId) {
+        logger.trace("Called OfferPostgres get method");
         Offer offer = null;
         String sql = "SELECT * FROM offer where user_id=? AND item_id=?;";
 
@@ -81,7 +85,7 @@ public class OfferPostgres implements Dao<Offer> {
                 offer = new Offer(user, item, offerDate, offerAmount);
             }
         } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return offer;
@@ -89,6 +93,7 @@ public class OfferPostgres implements Dao<Offer> {
 
     @Override
     public List<Offer> getAll() {
+        logger.trace("Called OfferPostgres getAll method");
         List<Offer> offers = new ArrayList<>();
         String sql = "SELECT * FROM offer";
 
@@ -109,7 +114,7 @@ public class OfferPostgres implements Dao<Offer> {
                 offers.add(offer);
             }
         } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return offers;
@@ -117,6 +122,7 @@ public class OfferPostgres implements Dao<Offer> {
 
     @Override
     public Offer insert(Offer offer) {
+        logger.trace("Called OfferPostgres insert method");
         String sql = """
                 INSERT INTO offer (user_id, item_id, offer_amount, offer_date)
                 VALUES (?, ?, money(?::numeric), ?)
@@ -138,8 +144,7 @@ public class OfferPostgres implements Dao<Offer> {
             }
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return offer;
@@ -147,6 +152,7 @@ public class OfferPostgres implements Dao<Offer> {
 
     @Override
     public boolean update(Offer offer) {
+        logger.trace("Called OfferPostgres update method");
         String sql = "UPDATE offer SET offer_date = ?, offer_amount = money(?::numeric) WHERE user_id = ? AND item_id = ?;";
 
         int rowsChanged = -1;
@@ -163,8 +169,7 @@ public class OfferPostgres implements Dao<Offer> {
             rowsChanged = ps.executeUpdate();
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return rowsChanged >= 1;
@@ -173,6 +178,7 @@ public class OfferPostgres implements Dao<Offer> {
 
     @Override
     public boolean delete(int userId) {
+        logger.trace("Called OfferPostgres delete method");
         String sql = "DELETE FROM offer WHERE user_id = ?";
 
         int rowsChanged = -1;
@@ -185,14 +191,14 @@ public class OfferPostgres implements Dao<Offer> {
             rowsChanged = ps.executeUpdate();
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return rowsChanged >= 1;
     }
 
     public boolean delete(int userId, int itemId) {
+        logger.trace("Called OfferPostgres delete method");
         String sql = "DELETE FROM offer WHERE user_id = ? AND item_id = ?";
 
         int rowsChanged = -1;
@@ -206,8 +212,7 @@ public class OfferPostgres implements Dao<Offer> {
             rowsChanged = ps.executeUpdate();
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return rowsChanged >= 1;

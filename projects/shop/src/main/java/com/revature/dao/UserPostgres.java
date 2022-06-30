@@ -2,6 +2,8 @@ package com.revature.dao;
 
 import com.revature.model.User;
 import com.revature.util.ConnectionUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.*;
@@ -10,6 +12,8 @@ import java.util.List;
 
 
 public class UserPostgres implements Dao<User> {
+
+    private static final Logger logger = LogManager.getLogger(UserPostgres.class);
     private String schema = "public";
 
     public UserPostgres() {
@@ -30,6 +34,7 @@ public class UserPostgres implements Dao<User> {
 
     @Override
     public User get(int id) {
+        logger.trace("Called UserPostgres get method");
         User user = null;
         String sql = "SELECT * FROM \"user\" WHERE user_id = ?;";
 
@@ -47,13 +52,14 @@ public class UserPostgres implements Dao<User> {
                 user = new User(id, username, password, role);
             }
         } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return user;
     }
 
     public User get(String username) {
+        logger.trace("Called UserPostgres get method");
         User user = null;
         String sql = "SELECT * FROM \"user\" WHERE username = ?;";
 
@@ -71,7 +77,7 @@ public class UserPostgres implements Dao<User> {
                 user = new User(id, username, password, role);
             }
         } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return user;
@@ -79,6 +85,7 @@ public class UserPostgres implements Dao<User> {
 
     @Override
     public List<User> getAll() {
+        logger.trace("Called UserPostgres getAll method");
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM \"user\"";
 
@@ -97,7 +104,7 @@ public class UserPostgres implements Dao<User> {
                 users.add(user);
             }
         } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return users;
@@ -105,6 +112,7 @@ public class UserPostgres implements Dao<User> {
 
     @Override
     public User insert(User user) {
+        logger.trace("Called UserPostgres insert method");
         String sql = "INSERT INTO "
                 + "\"user\"(username, password, assigned_role) "
                 + "VALUES(?, ?, ?::role) returning user_id";
@@ -122,8 +130,7 @@ public class UserPostgres implements Dao<User> {
             }
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return user;
@@ -131,6 +138,7 @@ public class UserPostgres implements Dao<User> {
 
     @Override
     public boolean update(User user) {
+        logger.trace("Called UserPostgres update method");
         String sql = "UPDATE \"user\" "
                 + "SET "
                 + "username = ?, "
@@ -153,8 +161,7 @@ public class UserPostgres implements Dao<User> {
             rowsChanged = ps.executeUpdate();
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return rowsChanged >= 1;
@@ -163,6 +170,7 @@ public class UserPostgres implements Dao<User> {
 
     @Override
     public boolean delete(int id) {
+        logger.trace("Called UserPostgres delete method");
         String sql = "DELETE FROM \"user\" WHERE user_id = ?";
 
         int rowsChanged = -1;
@@ -175,8 +183,7 @@ public class UserPostgres implements Dao<User> {
             rowsChanged = ps.executeUpdate();
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return rowsChanged >= 1;

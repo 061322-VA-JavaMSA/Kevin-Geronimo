@@ -2,6 +2,8 @@ package com.revature.dao;
 
 import com.revature.model.Item;
 import com.revature.util.ConnectionUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.*;
@@ -10,6 +12,7 @@ import java.util.List;
 
 
 public class ItemPostgres implements Dao<Item> {
+    private static final Logger logger = LogManager.getLogger(ItemPostgres.class);
     private String schema = "public";
 
     public ItemPostgres() {
@@ -30,6 +33,7 @@ public class ItemPostgres implements Dao<Item> {
 
     @Override
     public Item get(int id) {
+        logger.trace("Called ItemPostgres get method");
         Item item = null;
         String sql = "SELECT * FROM item WHERE item_id = ?;";
 
@@ -46,7 +50,7 @@ public class ItemPostgres implements Dao<Item> {
                 item = new Item(id, itemName, stock);
             }
         } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return item;
@@ -54,6 +58,7 @@ public class ItemPostgres implements Dao<Item> {
 
     // TODO: this method needs a test case
     public Item get(String itemName) {
+        logger.trace("Called ItemPostgres get method");
         Item item = null;
         String sql = "SELECT * FROM item WHERE item_name = ?;";
 
@@ -70,7 +75,7 @@ public class ItemPostgres implements Dao<Item> {
                 item = new Item(id, itemName, stock);
             }
         } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return item;
@@ -78,6 +83,7 @@ public class ItemPostgres implements Dao<Item> {
 
     @Override
     public List<Item> getAll() {
+        logger.trace("Called ItemPostgres getAll method");
         List<Item> items = new ArrayList<>();
         String sql = "SELECT * FROM item";
 
@@ -95,7 +101,7 @@ public class ItemPostgres implements Dao<Item> {
                 items.add(item);
             }
         } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return items;
@@ -103,6 +109,7 @@ public class ItemPostgres implements Dao<Item> {
 
     @Override
     public Item insert(Item Item) {
+        logger.trace("Called ItemPostgres insert method");
         String sql = "INSERT INTO "
                 + "item(item_name, stock) "
                 + "VALUES(?, ?::stock) returning item_id";
@@ -119,8 +126,7 @@ public class ItemPostgres implements Dao<Item> {
             }
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return Item;
@@ -128,6 +134,7 @@ public class ItemPostgres implements Dao<Item> {
 
     @Override
     public boolean update(Item Item) {
+        logger.trace("Called ItemPostgres update method");
         String sql = "UPDATE item "
                 + "SET "
                 + "item_name = ?, "
@@ -148,8 +155,7 @@ public class ItemPostgres implements Dao<Item> {
             rowsChanged = ps.executeUpdate();
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return rowsChanged >= 1;
@@ -158,6 +164,7 @@ public class ItemPostgres implements Dao<Item> {
 
     @Override
     public boolean delete(int id) {
+        logger.trace("Called ItemPostgres delete method");
         String sql = "DELETE FROM item WHERE item_id = ?";
 
         int rowsChanged = -1;
@@ -170,8 +177,7 @@ public class ItemPostgres implements Dao<Item> {
             rowsChanged = ps.executeUpdate();
 
         } catch (SQLException | IOException ex) {
-            // TODO Auto-generated catch block
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
         }
 
         return rowsChanged >= 1;
