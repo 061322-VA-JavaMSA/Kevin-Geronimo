@@ -35,7 +35,7 @@ create table offer
 insert into "user" (username, password, assigned_role)
 values ('eric', '1234', 'EMPLOYEE');
 insert into "user" (username, password, assigned_role)
-values ('manager', 'secret', 'MANAGER');
+values ('kevin', 'secret', 'MANAGER');
 
 insert into item (item_name)
 values ('Lemonade - Pineapple Passion');

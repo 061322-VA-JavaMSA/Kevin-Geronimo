@@ -2,6 +2,7 @@ package com.revature;
 
 import com.revature.dao.ItemPostgres;
 import com.revature.dao.OfferPostgres;
+import com.revature.dao.UserPostgres;
 import com.revature.model.Item;
 import com.revature.model.Offer;
 import com.revature.model.User;
@@ -51,11 +52,7 @@ public class App {
                     } else if (user.getRole().equals(User.Role.EMPLOYEE)) {
                         printEmployeeMenu(scanner, user);
                     } else if (user.getRole().equals(User.Role.MANAGER)) {
-                        logger.info(String.format("""
-                                -------------MENU---------------
-                                Manager: %s        0) Logout
-                                """, user.getUsername()));
-                        logger.info("Manger view not yet implemented\n");
+                        printManagerMenu(scanner, user);
                     }
 
 
@@ -354,6 +351,104 @@ public class App {
                 default:
                     logger.info("Please choose 1, 2, 3 or 4");
                     break;
+            }
+        }
+    }
+
+    public static void printManagerMenu(Scanner scanner, User user) {
+        label:
+        while (true) {
+            logger.info(String.format("""
+                    -----------------MENU-------------------
+                    Manager: %s                0) Logout
+                                                    
+                    1) View all employees
+                    2) View all accepted offers
+                    """, user.getUsername()));
+
+            String menuInput = scanner.nextLine();
+
+            switch (menuInput) {
+                case "1": {
+                    List<User> users = new UserPostgres().getAll();
+                    logger.info("---------------EMPLOYEES-----------------");
+                    logger.info(String.format("%-30s %-30s", "USERNAME", "ROLE"));
+                    for (User u : users) {
+                        logger.info(String.format("%-30s %-30s", u.getUsername(), u.getRole()));
+                    }
+
+                    logger.info("""
+                            -------------------------------
+                            1) Add Employee         3) Menu
+                            2) Remove Employee
+                            """);
+
+                    String employeesInput = scanner.nextLine();
+                    switch (employeesInput) {
+                        case "1": {
+                            logger.info("---------ADD EMPLOYEE----------");
+                            logger.info("Employee name: ");
+                            String employeeNameInput = scanner.nextLine();
+
+                            User u = new User();
+                            u.setUsername(employeeNameInput);
+                            u.setPassword((String.valueOf((int) ((Math.random() * (1010 - 1000)) + 1000))));
+                            u.setRole(User.Role.EMPLOYEE);
+
+                            List<User> existingUsers = users.stream().filter(u1 -> u1.getUsername().equals(employeeNameInput)).toList();
+                            if (existingUsers.isEmpty()) {
+                                new UserPostgres().insert(u);
+                            } else {
+                                logger.info("Employee already exists.\n");
+                            }
+                            break;
+                        }
+                        case "2": {
+                            logger.info("---------REMOVE EMPLOYEE----------");
+                            logger.info("Employee name: ");
+                            String employeeNameInput = scanner.nextLine();
+
+                            User u = new UserPostgres().get(employeeNameInput);
+
+                            if (u != null && u.getRole().equals(User.Role.EMPLOYEE)) {
+                                new UserPostgres().delete(u.getId());
+                            } else {
+                                logger.info("\nNo Employee found with that name.\n");
+                            }
+                            break;
+                        }
+                        case "3": {
+                            continue;
+                        }
+                        default: {
+                            logger.info("Please choose 1, 2 or 3.\n");
+                            break;
+                        }
+                    }
+                    break;
+                }
+                case "2": {
+                    // TODO: repeated code. create a service
+                    List<Offer> offers = new OfferPostgres().getAll();
+                    logger.info("-".repeat(62) + "ALL OFFERS" + "-".repeat(62)); //java 11+ only for string repeat :(
+                    logger.info(String.format("%-30s %-30s %-30s %-30s", "CUSTOMER", "ITEM", "OFFER AMOUNT", "DATE"));
+                    for (Offer offer : offers) {
+                        logger.info(String.format("%-30s %-30s $%-30s %-30s %-30s",
+                                offer.getUser().getUsername(),
+                                offer.getItem().getItemName(),
+                                offer.getAmount(),
+                                offer.getDate(),
+                                offer.getItem().getStock()));
+                    }
+                    break;
+                }
+                case "0": {
+                    break label;
+                }
+                default: {
+                    logger.info("Please choose 1, 2 or 3.\n");
+                    break;
+                }
             }
         }
     }
