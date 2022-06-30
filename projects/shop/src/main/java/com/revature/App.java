@@ -19,58 +19,68 @@ public class App {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        label:
         while (true) {
             logger.info("""
                     Welcome to Random Shop!
                     1) Login
                     2) Register
+                    3) Exit
                     """);
             String input = scanner.nextLine();
 
-            if (input.equals("1")) {
-                logger.info("------LOGIN------");
-                logger.info("Username: ");
-                String username = scanner.nextLine();
-                logger.info("Password: ");
-                String password = scanner.nextLine();
-                logger.info("");
-                User user = null;
-                try {
-                    user = new AuthService().login(username, password);
-                } catch (Exception e) {
-                    logger.info("Wrong credentials. Please try again");
+            switch (input) {
+                case "1": {
+                    logger.info("------LOGIN------");
+                    logger.info("Username: ");
+                    String username = scanner.nextLine();
+                    logger.info("Password: ");
+                    String password = scanner.nextLine();
                     logger.info("");
-                    continue;
+                    User user = null;
+                    try {
+                        user = new AuthService().login(username, password);
+                    } catch (Exception e) {
+                        logger.info("Wrong credentials. Please try again");
+                        logger.info("");
+                        continue;
+                    }
+
+                    if (user.getRole().equals(User.Role.CUSTOMER)) {
+                        printCustomerMenu(scanner, user);
+                    } else if (user.getRole().equals(User.Role.EMPLOYEE)) {
+                        printEmployeeMenu(scanner, user);
+                    } else if (user.getRole().equals(User.Role.MANAGER)) {
+                        logger.info(String.format("""
+                                -------------MENU---------------
+                                Manager: %s        0) Logout
+                                """, user.getUsername()));
+                        logger.info("Manger view not yet implemented\n");
+                    }
+
+
+                    break;
                 }
-
-                if (user.getRole().equals(User.Role.CUSTOMER)) {
-                    printCustomerMenu(scanner, user);
-                } else if (user.getRole().equals(User.Role.EMPLOYEE)) {
-                    printEmployeeMenu(scanner, user);
-                } else if (user.getRole().equals(User.Role.MANAGER)) {
-                    logger.info(String.format("""
-                            -------------MENU---------------
-                            Manager: %s        0) Logout
-                            """, user.getUsername()));
-                    logger.info("Manger view not yet implemented\n");
-                }
-
-
-            } else if (input.equals("2")) {
-                logger.info("-------REGISTER------");
-                logger.info("Username: ");
-                String username = scanner.nextLine();
-                logger.info("Password: ");
-                String password = scanner.nextLine();
-                logger.info("");
-                try {
-                    new AuthService().register(username, password);
-                } catch (Exception e) {
-                    logger.info(e.getMessage());
+                case "2": {
+                    logger.info("-------REGISTER------");
+                    logger.info("Username: ");
+                    String username = scanner.nextLine();
+                    logger.info("Password: ");
+                    String password = scanner.nextLine();
                     logger.info("");
+                    try {
+                        new AuthService().register(username, password);
+                    } catch (Exception e) {
+                        logger.info(e.getMessage());
+                        logger.info("");
+                    }
+                    break;
                 }
-            } else {
-                logger.info("\nPlease choose 1 or 2\n");
+                case "3":
+                    break label;
+                default:
+                    logger.info("\nPlease choose 1 or 2\n");
+                    break;
             }
         }
 
@@ -88,7 +98,7 @@ public class App {
                     2) My Pending offers
                     3) Available items
                     """, user.getUsername()));
-            ;
+
             String menuInput = scanner.nextLine();
 
             switch (menuInput) {
@@ -152,7 +162,15 @@ public class App {
                             continue;
                         }
                         Offer offer = new Offer(user, filteredItem.get(0), LocalDate.now(), Double.parseDouble(offerInput));
-                        new OfferPostgres().insert(offer);
+                        Offer checkExistingOffer = new OfferPostgres().get(user.getId(), filteredItem.get(0).getId());
+                        if (checkExistingOffer == null) {
+                            new OfferPostgres().insert(offer);
+                        } else {
+                            checkExistingOffer.setAmount(Double.parseDouble(offerInput));
+                            checkExistingOffer.setDate(LocalDate.now());
+                            new OfferPostgres().update(checkExistingOffer);
+                            logger.info("Thanks for updating your offer!\n");
+                        }
                     } else {
                         logger.info("Please choose 1 or 2\n");
                     }
@@ -177,7 +195,7 @@ public class App {
                     1) View all Offers
                     2) View all Items
                     """, user.getUsername()));
-            ;
+
             String menuInput = scanner.nextLine();
 
             switch (menuInput) {
@@ -219,8 +237,12 @@ public class App {
                             }
 
                             Item item = filtered_offers.get(0).getItem();
-                            item.setStock(Item.Stock.OWNED);
-                            new ItemPostgres().update(item);
+                            if (!item.getStock().equals(Item.Stock.OWNED)) {
+                                item.setStock(Item.Stock.OWNED);
+                                new ItemPostgres().update(item);
+                            } else {
+                                logger.info("That offer has already been accepted.");
+                            }
 
                             //System: remove pending offers for the same item
                             for (Offer offer : offers) {
@@ -273,8 +295,8 @@ public class App {
                     }
 
                     logger.info("""
-                            ------------------------
-                            1) Add Item
+                            ---------------------------
+                            1) Add Item         3) Menu
                             2) Remove Item
                             """);
 
@@ -288,7 +310,13 @@ public class App {
                             Item item = new Item();
                             item.setItemName(itemNameInput);
                             item.setStock(Item.Stock.AVAILABLE);
-                            new ItemPostgres().insert(item);
+
+                            List<Item> existingItems = items.stream().filter(item1 -> item1.getItemName().equals(itemNameInput)).toList();
+                            if (existingItems.isEmpty()) {
+                                new ItemPostgres().insert(item);
+                            } else {
+                                logger.info("That item is already available.\n");
+                            }
                             break;
                         }
                         case "2": {
@@ -299,14 +327,23 @@ public class App {
                             Item item = new ItemPostgres().get(itemNameInput);
 
                             if (item != null && item.getStock().equals(Item.Stock.AVAILABLE)) {
-                                new ItemPostgres().delete(item.getId());
+                                List<Offer> checkExistingOffers = new OfferPostgres().getAll()
+                                        .stream().filter(offer -> offer.getItem().getId() == item.getId()).toList();
+                                if (checkExistingOffers.isEmpty()) {
+                                    new ItemPostgres().delete(item.getId());
+                                } else {
+                                    logger.info("Please reject existing offers before removing item\n");
+                                }
                             } else {
                                 logger.info("\nNo item found with that name or is owned.\n");
                             }
                             break;
                         }
+                        case "3": {
+                            continue;
+                        }
                         default:
-                            logger.info("Please choose 1, or 2");
+                            logger.info("Please choose 1, 2 or 3.\n");
                             break;
                     }
                     break;

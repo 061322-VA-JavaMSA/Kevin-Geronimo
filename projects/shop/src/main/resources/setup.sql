@@ -7,8 +7,8 @@ create type role as enum ('CUSTOMER', 'EMPLOYEE', 'MANAGER');
 create table "user"
 (
     user_id       serial primary key,
-    username      varchar(20) not null,
-    password      text        not null,
+    username      varchar(20) unique not null,
+    password      text               not null,
     assigned_role role default 'CUSTOMER'
 );
 
@@ -18,7 +18,7 @@ create type stock as enum ('AVAILABLE', 'OWNED');
 create table item
 (
     item_id   serial primary key,
-    item_name varchar(30) not null,
+    item_name varchar(30) unique not null,
     stock     stock default 'AVAILABLE'
 );
 
