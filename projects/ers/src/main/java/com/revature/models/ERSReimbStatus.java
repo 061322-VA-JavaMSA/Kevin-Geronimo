@@ -11,7 +11,7 @@ public class ERSReimbStatus {
     @Column(name = "reimb_status_id", nullable = false)
     private int id;
 
-    @Column(name = "reimb_status", length = 10)
+    @Column(name = "reimb_status", nullable = false, length = 10)
     private String status;
 
     public int getId() {

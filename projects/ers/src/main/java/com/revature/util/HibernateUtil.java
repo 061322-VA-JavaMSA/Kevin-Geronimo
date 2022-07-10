@@ -1,6 +1,6 @@
 package com.revature.util;
 
-import com.revature.models.ERSReimbStatus;
+import com.revature.models.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
 import org.hibernate.boot.MetadataSources;
@@ -21,6 +21,10 @@ public class HibernateUtil {
 
             Metadata metadata = new MetadataSources(standardRegistry)
                     .addAnnotatedClass(ERSReimbStatus.class)
+                    .addAnnotatedClass(ERSReimbType.class)
+                    .addAnnotatedClass(ERSUserRole.class)
+                    .addAnnotatedClass(ERSUser.class)
+                    .addAnnotatedClass(ERSReimbursement.class)
                     .buildMetadata();
 
             sf = metadata.getSessionFactoryBuilder().build();
