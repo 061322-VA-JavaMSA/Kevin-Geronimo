@@ -1,28 +1,22 @@
-DROP TYPE IF EXISTS status CASCADE;
-CREATE TYPE status AS ENUM ('APPROVED', 'DENIED');
 DROP TABLE IF EXISTS ers_reimbursement_status CASCADE;
 CREATE TABLE ers_reimbursement_status
 (
     reimb_status_id serial PRIMARY KEY,
-    reimb_status    status NOT NULL
+    reimb_status    varchar(10) NOT NULL
 );
 
-DROP TYPE IF EXISTS reimbusement CASCADE;
-CREATE TYPE reimbusement AS ENUM ('LODGING', 'TRAVEL', 'FOOD', 'OTHER');
 DROP TABLE IF EXISTS ers_reimbursement_type CASCADE;
 CREATE TABLE ers_reimbursement_type
 (
     reimb_type_id serial PRIMARY KEY,
-    reimb_type    reimbusement NOT NULL
+    reimb_type    varchar(10) NOT NULL
 );
 
-DROP TYPE IF EXISTS role CASCADE;
-CREATE TYPE role AS ENUM ('EMPLOYEE', 'MANAGER');
 DROP TABLE IF EXISTS ers_user_roles CASCADE;
 CREATE TABLE ers_user_roles
 (
     ers_user_role_id serial PRIMARY KEY,
-    user_role        role NOT NULL
+    user_role        varchar(10) NOT NULL
 );
 
 DROP TABLE IF EXISTS ers_users CASCADE;
@@ -50,4 +44,15 @@ CREATE TABLE ers_reimbursement
     reimb_resolver    int REFERENCES ers_users (ers_users_id),
     reimb_status_id   int REFERENCES ers_reimbursement_status (reimb_status_id),
     reimb_type_id     int REFERENCES ers_reimbursement_type (reimb_type_id)
-)
+);
+
+INSERT INTO ers_reimbursement_status (reimb_status) VALUES ('APPROVED');
+INSERT INTO ers_reimbursement_status (reimb_status) VALUES ('DENIED');
+
+INSERT INTO ers_reimbursement_type (reimb_type) VALUES ('LODGING');
+INSERT INTO ers_reimbursement_type (reimb_type) VALUES ('TRAVEL');
+INSERT INTO ers_reimbursement_type (reimb_type) VALUES ('FOOD');
+INSERT INTO ers_reimbursement_type (reimb_type) VALUES ('OTHER');
+
+INSERT INTO ers_user_roles (user_role) VALUES ('EMPLOYEE');
+INSERT INTO ers_user_roles (user_role) VALUES ('MANAGER');
