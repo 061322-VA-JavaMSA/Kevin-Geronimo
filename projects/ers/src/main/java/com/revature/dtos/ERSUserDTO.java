@@ -1,34 +1,30 @@
-package com.revature.models;
+package com.revature.dtos;
 
-import javax.persistence.*;
+import com.revature.models.ERSUser;
+import com.revature.models.ERSUserRole;
+
 import java.util.Objects;
 
-@Entity
-@Table(name = "ers_users")
-public class ERSUser {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ers_users_id", nullable = false)
+public class ERSUserDTO {
     private Integer id;
-
-    @Column(name = "ers_username", nullable = false, unique = true, length = 50)
     private String username;
-
-    @Column(name = "ers_password", nullable = false, length = 50)
-    private String password;
-
-    @Column(name = "user_first_name", nullable = false, length = 100)
     private String firstName;
-
-    @Column(name = "user_last_name", nullable = false, length = 100)
     private String lastName;
-
-    @Column(name = "user_email", nullable = false, unique = true, length = 150)
     private String email;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_role_id", nullable = false)
     private ERSUserRole ersUserRole;
+
+    public ERSUserDTO() {
+        super();
+    }
+
+    public ERSUserDTO(ERSUser user) {
+        id = user.getId();
+        username = user.getUsername();
+        firstName = user.getFirstName();
+        lastName = user.getLastName();
+        email = user.getEmail();
+        ersUserRole = user.getErsUserRole();
+    }
 
     public Integer getId() {
         return id;
@@ -44,14 +40,6 @@ public class ERSUser {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getFirstName() {
@@ -90,21 +78,20 @@ public class ERSUser {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ERSUser ersUser = (ERSUser) o;
-        return Objects.equals(id, ersUser.id) && Objects.equals(username, ersUser.username) && Objects.equals(password, ersUser.password) && Objects.equals(firstName, ersUser.firstName) && Objects.equals(lastName, ersUser.lastName) && Objects.equals(email, ersUser.email) && Objects.equals(ersUserRole, ersUser.ersUserRole);
+        ERSUserDTO that = (ERSUserDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(email, that.email) && Objects.equals(ersUserRole, that.ersUserRole);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, firstName, lastName, email, ersUserRole);
+        return Objects.hash(id, username, firstName, lastName, email, ersUserRole);
     }
 
     @Override
     public String toString() {
-        return "ERSUser{" +
+        return "ERSUserDTO{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

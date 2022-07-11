@@ -55,6 +55,7 @@ public class UserService {
 
             user = s.createQuery(cq).getSingleResult();
         }
+
         if (user == null) {
             throw new UserNotFoundException();
         }
