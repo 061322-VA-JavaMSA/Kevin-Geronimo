@@ -2,25 +2,18 @@
   <div class="py-12 w-80">
     <h2 class="text-2xl font-bold">Sign in</h2>
     <div class="max-w-md mt-8">
-      <div class="grid grid-cols-1 gap-6">
-        <label class="block">
-          <span class="text-gray-700">Email</span>
-          <input type="email" class="block w-full mt-1" placeholder="" />
-        </label>
-        <label class="block">
-          <span class="text-gray-700">Password</span>
-          <input
-            type="password"
-            class="block w-full mt-1"
-            placeholder=""
-          />
-        </label>
-        <button
-          class="block py-2 text-purple-100 bg-slate-600 rounded shadow-lg shadow-slate-300"
-        >
-          Login
-        </button>
-      </div>
+      <form class="grid grid-cols-1 gap-6" onsubmit="loginFormHandler(event)">
+        <div>
+          <label for="username" class="text-gray-700">Username </label>
+          <input type="text" name="username" id="username_input" required class="block w-full mt-1">
+        </div>
+        <div>
+          <label for="password" class="text-gray-700">Password </label>
+          <input type="password" name="password" id="password_input" required class="block w-full mt-1">
+        </div>
+        <input type="submit" value="login""
+          class="block py-2 text-purple-100 bg-slate-600 rounded shadow-lg shadow-slate-300">
+      </form>
     </div>
   </div>
 </div>

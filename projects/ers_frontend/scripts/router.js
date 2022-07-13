@@ -6,7 +6,7 @@ const route = (event) => {
 };
 
 const routes = {
-    404: "/pages/404.html",
+    404: "/views/404.html",
     "/": "./views/index.html",
     "/login": "/views/login.html",
     "/register": "/views/register.html",
@@ -16,6 +16,18 @@ const handleLocation = async () => {
     const path = window.location.pathname;
     const route = routes[path] || routes[404];
     const html = await fetch(route).then((data) => data.text());
+
+    let login_nav = document.getElementById("login_nav");
+    let register_nav = document.getElementById("register_nav");
+
+    if (path === "/login") {
+        login_nav.classList.add("hidden")
+        register_nav.classList.remove("hidden")
+    } else if (path === "/register") {
+        register_nav.classList.add("hidden")
+        login_nav.classList.remove("hidden")
+    }
+
     document.getElementById("main-page").innerHTML = html;
 };
 
