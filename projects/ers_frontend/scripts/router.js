@@ -18,13 +18,9 @@ const handleLocation = async () => {
     const html = await fetch(route).then((data) => data.text());
 
     let login_nav = document.getElementById("login_nav");
-    let register_nav = document.getElementById("register_nav");
-
     if (path === "/login") {
         login_nav.classList.add("hidden")
-        register_nav.classList.remove("hidden")
-    } else if (path === "/register") {
-        register_nav.classList.add("hidden")
+    } else if (path === "/") {
         login_nav.classList.remove("hidden")
     }
 
