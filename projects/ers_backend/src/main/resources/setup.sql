@@ -35,11 +35,11 @@ DROP TABLE IF EXISTS ers_reimbursement CASCADE;
 CREATE TABLE ers_reimbursement
 (
     reimb_id          serial PRIMARY KEY,
-    reimb_amount      money NOT NULL,
+    reimb_amount      numeric NOT NULL,
     reimb_submitted   date  NOT NULL,
     reimb_resolved    date,
     reimb_description varchar(250),
-    reimb_receipt     text,
+    reimb_receipt     bytea,
     reimb_author      int REFERENCES ers_users (ers_users_id),
     reimb_resolver    int REFERENCES ers_users (ers_users_id),
     reimb_status_id   int REFERENCES ers_reimbursement_status (reimb_status_id),
@@ -48,6 +48,7 @@ CREATE TABLE ers_reimbursement
 
 INSERT INTO ers_reimbursement_status (reimb_status) VALUES ('APPROVED');
 INSERT INTO ers_reimbursement_status (reimb_status) VALUES ('DENIED');
+INSERT INTO ers_reimbursement_status (reimb_status) VALUES ('PENDING');
 
 INSERT INTO ers_reimbursement_type (reimb_type) VALUES ('LODGING');
 INSERT INTO ers_reimbursement_type (reimb_type) VALUES ('TRAVEL');

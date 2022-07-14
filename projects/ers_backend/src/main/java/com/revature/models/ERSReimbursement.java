@@ -25,7 +25,7 @@ public class ERSReimbursement {
     private String description;
 
     @Column(name = "reimb_receipt")
-    private String receipt;
+    private byte[] receipt;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "reimb_author", nullable = false)
@@ -83,11 +83,11 @@ public class ERSReimbursement {
         this.description = description;
     }
 
-    public String getReceipt() {
+    public byte[] getReceipt() {
         return receipt;
     }
 
-    public void setReceipt(String receipt) {
+    public void setReceipt(byte[] receipt) {
         this.receipt = receipt;
     }
 
