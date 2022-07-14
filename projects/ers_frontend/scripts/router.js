@@ -9,7 +9,7 @@ const routes = {
     404: "/views/404.html",
     "/": "./views/index.html",
     "/login": "/views/login.html",
-    "/register": "/views/register.html",
+    "/home": "/views/home.html",
 };
 
 const handleLocation = async () => {
@@ -18,10 +18,25 @@ const handleLocation = async () => {
     const html = await fetch(route).then((data) => data.text());
 
     let login_nav = document.getElementById("login_nav");
-    if (path === "/login") {
+    let home_nav = document.getElementById("home_nav");
+    let logout_nav = document.getElementById("logout_nav");
+    
+    if (path === "/" && sessionStorage.getItem("principal")) {
+        home_nav.classList.remove("hidden")
         login_nav.classList.add("hidden")
+        logout_nav.classList.remove("hidden")
     } else if (path === "/") {
         login_nav.classList.remove("hidden")
+        home_nav.classList.add("hidden")
+        logout_nav.classList.add("hidden")
+    } else if (path === "/login") {
+        login_nav.classList.add("hidden")
+        home_nav.classList.add("hidden")
+        logout_nav.classList.add("hidden")
+    } else {
+        logout_nav.classList.remove("hidden")
+        login_nav.classList.add("hidden")
+        home_nav.classList.add("hidden")
     }
 
     document.getElementById("main-page").innerHTML = html;
