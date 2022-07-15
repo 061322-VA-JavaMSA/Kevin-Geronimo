@@ -23,18 +23,16 @@ async function loginFormHandler(event) {
     }
 };
 
-async function logout() {
-    let response = await fetch(`${apiUrl}/auth`, {
-        method: 'DELETE',
-        credentials: 'include'
-    });
+// async function logout() {
+//     let response = await fetch(`${apiUrl}/auth`, {
+//         method: 'DELETE',
+//         credentials: 'include'
+//     });
 
-    if (response.status == 200) {
-        sessionStorage.clear();
-        principal = null;
-        window.history.pushState({}, "", "/");
-        handleLocation()
-    } else {
-        console.log('Unable to logout.')
-    }
-}
+//     if (response.status == 200) {
+//         sessionStorage.clear();
+//     } else {
+//         console.log('Unable to logout.')
+//     }
+//     handleLocation()
+// }
