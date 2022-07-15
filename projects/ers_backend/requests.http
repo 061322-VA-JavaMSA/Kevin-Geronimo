@@ -1,0 +1,10 @@
+POST http://localhost:8080/ers/auth
+Content-Type: application/x-www-form-urlencoded
+
+username=patrick404&password=123456
+
+###
+DELETE http://localhost:8080/ers/auth
+
+###
+GET https://pokeapi.co/api/v2/pokemon/1

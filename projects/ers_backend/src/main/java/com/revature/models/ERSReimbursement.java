@@ -1,5 +1,10 @@
 package com.revature.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.revature.util.LocalDateDeserializer;
+import com.revature.util.LocalDateSerializer;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -12,12 +17,16 @@ public class ERSReimbursement {
     @Column(name = "reimb_id", nullable = false)
     private Integer id;
 
-    @Column(name = "reimb_amount", nullable = false)
+    @Column(name = "reimb_amount", nullable = false, columnDefinition = "NUMERIC")
     private Double amount;
 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     @Column(name = "reimb_submitted", nullable = false)
     private LocalDate dateSubmitted;
 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
     @Column(name = "reimb_resolved")
     private LocalDate dateResolved;
 

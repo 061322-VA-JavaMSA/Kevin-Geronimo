@@ -1,5 +1,6 @@
 package com.revature.servlets;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.exceptions.ReimbNotCreatedException;
 import com.revature.exceptions.UserNotCreatedException;
 import com.revature.models.ERSReimbStatus;
@@ -17,26 +18,32 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.List;
 
 @MultipartConfig
 public class ReimbServlet extends HttpServlet {
     private final ReimbService reimbService = new ReimbService();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.addHeader("Content-Type", "application/json");
 
+        List<ERSReimbursement> reimbursements = reimbService.getReimbursements();
+        try (PrintWriter pw = response.getWriter()) {
+            pw.write(objectMapper.writeValueAsString(reimbursements));
+            response.setStatus(200);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String ok = request.getParameter("amount");
         Double amount = Double.parseDouble(request.getParameter("amount"));
         String description = request.getParameter("description");
         int reimbTypeId = Integer.parseInt(request.getParameter("reimbursement_type_id"));
         HttpSession session = request.getSession();
 
         Part filePart = request.getPart("receipt"); // Retrieves <input type="file" name="receipt">
-        String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
         InputStream fileContent = filePart.getInputStream();
 
         ERSReimbursement ersReimbursement = new ERSReimbursement();

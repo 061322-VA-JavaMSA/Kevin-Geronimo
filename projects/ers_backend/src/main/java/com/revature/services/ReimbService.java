@@ -8,6 +8,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.exception.ConstraintViolationException;
 
+import java.util.List;
+
 public class ReimbService {
     public ERSReimbursement createReimb(ERSReimbursement reimbursement) throws ReimbNotCreatedException {
         reimbursement.setId(-1);
@@ -24,5 +26,15 @@ public class ReimbService {
             throw new ReimbNotCreatedException();
         }
         return reimbursement;
+    }
+
+    public List<ERSReimbursement> getReimbursements() {
+        List<ERSReimbursement> reimbursements = null;
+
+        try(Session s = HibernateUtil.getSessionFactory().openSession()){
+            reimbursements = s.createQuery("from ERSReimbursement ", ERSReimbursement.class).list();
+        }
+
+        return reimbursements;
     }
 }
