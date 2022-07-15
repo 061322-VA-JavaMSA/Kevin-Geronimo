@@ -42,7 +42,7 @@ function populateTable(data, target){
         img.src = "data:image/jpeg;base64," + reimbursement.receipt;
         img.className = "h-14 w-14";
 
-        tdAmount.innerHTML = reimbursement.amount;
+        tdAmount.innerHTML = "$" + reimbursement.amount;
         tdDescription.innerHTML = reimbursement.description;
         tdType.innerHTML = reimbursement.ersReimbType.type;
         tdSubmitted.innerHTML = reimbursement.dateSubmitted;

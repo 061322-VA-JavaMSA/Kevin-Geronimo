@@ -5,7 +5,11 @@ async function editProfileFormHandler(event) {
     let formData = new FormData(event.target);
     const data = {};
     formData.forEach((value, key) => (data[key] = value));
-    console.log(JSON.stringify(data))
+
+    // to avoid fetching auth endpoint again
+    let principal = JSON.parse(sessionStorage.getItem("principal"));
+    principal.username = data.username;
+    sessionStorage.setItem("principal", JSON.stringify(principal))
 
     let response = await fetch(`${apiUrl}/users`, {
         method: 'PUT',
