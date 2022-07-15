@@ -1,5 +1,6 @@
 package com.revature.services;
 
+import com.revature.daos.ERSUserHibernate;
 import com.revature.exceptions.UserNotCreatedException;
 import com.revature.exceptions.UserNotFoundException;
 import com.revature.models.ERSReimbursement;
@@ -15,6 +16,8 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class UserService {
+    // for testing purposes
+    private ERSUserHibernate ersUserHibernate = new ERSUserHibernate();
     public ERSUser createUser(ERSUser u) throws UserNotCreatedException {
         u.setId(-1);
         try (Session s = HibernateUtil.getSessionFactory().openSession()) {
@@ -32,18 +35,15 @@ public class UserService {
         return u;
     }
 
-//    public ERSUser getUser(int id) throws UserNotFoundException {
-//        ERSUser user;
-//
-//        try (Session s = HibernateUtil.getSessionFactory().openSession()) {
-//            user = s.get(ERSUser.class, id);
-//        }
-//
-//        if (user == null) {
-//            throw new UserNotFoundException();
-//        }
-//        return user;
-//    }
+    public ERSUser getUser(int id) throws UserNotFoundException {
+
+        ERSUser user = ersUserHibernate.getUser(id);
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+        return user;
+    }
 
     public ERSUser getUser(String username) throws UserNotFoundException {
         ERSUser user;
@@ -65,7 +65,7 @@ public class UserService {
     }
 
     public List<ERSUser> getUsers() {
-        List<ERSUser> users = null;
+        List<ERSUser> users;
 
         try(Session s = HibernateUtil.getSessionFactory().openSession()){
             users = s.createQuery("from ERSUser ", ERSUser.class).list();
