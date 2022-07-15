@@ -1,4 +1,4 @@
-async function getReimbursements(){
+async function getReimbursements(event){
     route()
 
     let apiUrl = 'http://localhost:8080/ers/reimbursements';
@@ -9,14 +9,14 @@ async function getReimbursements(){
     if(response.status == 200){
         let data = await response.json();
 
-        populateTable(data);
+        populateTable(data, event.target);
     } else{
         console.log('Unable to retrieve reimbursements.')
     }
 
 }
 
-function populateTable(data){
+function populateTable(data, target){
     let tableBody = document.getElementById('reimbursements');
 
     data.forEach(reimbursement => {
@@ -27,7 +27,7 @@ function populateTable(data){
         let tdAmount = document.createElement('td');
         tdAmount.className = td_class;
         let tdDescription = document.createElement('td');
-        tdDescription.className = td_class += " max-w-xs whitespace-normal truncate";
+        tdDescription.className = td_class += " max-w-[10rem] whitespace-normal truncate";
         tdDescription.classList.remove("whitespace-nowrap");
         let tdType = document.createElement('td');
         tdType.className = td_class;
@@ -53,9 +53,31 @@ function populateTable(data){
         tr.append(tdDescription);
         tr.append(tdType);
         tr.append(tdSubmitted);
+
+        let resolver = reimbursement.resolver;
+        
+        if (target.id === "resolved_link" && resolver) {
+            let tdResolved = document.createElement('td');
+            tdResolved.className = td_class;
+
+            let tdResolver = document.createElement('td');
+            tdResolver.className = td_class;
+
+            tdResolved.innerHTML = reimbursement.dateResolved;
+            tdResolver.innerHTML = resolver.username;
+            tr.append(tdResolved);
+            tr.append(tdResolver);
+        }
+
         tr.append(tdReceipt);
         tr.append(tdStatus);
 
-        tableBody.append(tr);
+        if (target.id === "pending_link") {
+            tableBody.append(tr);
+        } else if (target.id === "resolved_link" && resolver) {
+            tableBody.append(tr);
+        } else {
+            console.log("skipping row")
+        }
     });
 }

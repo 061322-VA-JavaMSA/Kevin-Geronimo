@@ -10,14 +10,15 @@ const routes = {
     "/": "./views/index.html",
     "/login": "/views/login.html",
     "/home": "/views/home.html",
-    "/pending": "/views/pending.html"
+    "/pending": "/views/pending.html",
+    "/resolved": "/views/resolved.html"
 };
 
 const updateNav = (path) => {
     let login_nav = document.getElementById("login_nav");
     let home_nav = document.getElementById("home_nav");
     let logout_nav = document.getElementById("logout_nav");
-    
+
     if (path === "/" && sessionStorage.getItem("principal")) {
         home_nav.classList.remove("hidden")
         login_nav.classList.add("hidden")
@@ -40,12 +41,17 @@ const updateNav = (path) => {
 const handleLocation = async () => {
     const path = window.location.pathname;
     const route = routes[path] || routes[404];
-    const html = await fetch(route).then((data) => data.text());
     updateNav(path);
+    const html = await fetch(route).then((data) => data.text());
 
     if (path === "/pending") {
         document.getElementById("inner-main-page").innerHTML = html;
-    } else {
+        document.getElementById('form-title').textContent = "Pending Reimbursements";
+    } else if (path === "/resolved") {
+        document.getElementById("inner-main-page").innerHTML = html;
+        document.getElementById('form-title').textContent = "Resolved Reimbursements";
+    }
+    else {
         document.getElementById("main-page").innerHTML = html;
     }
 

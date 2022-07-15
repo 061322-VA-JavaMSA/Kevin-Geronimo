@@ -1,38 +1,36 @@
 <header class="bg-white shadow">
-    <div class="max-w-[75%] mx-auto py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[90rem] mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
     </div>
     
 </header>
 <main>
-    <div class="max-w-[75%] mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="max-w-[90rem] mx-auto py-6 sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
             <div class="border-4 border-dashed border-gray-200 rounded-lg bg-gray-100 p-2">
                 <div>
-                    <div class="md:grid md:grid-cols-4 md:gap-6">
+                    <div class="lg:grid lg:grid-cols-4 lg:gap-6">
                         <div class="md:col-span-1">
                             <div class="px-4 sm:px-0">
-                                <h3 class="text-lg font-medium leading-6 text-gray-900">Reimbursement Form</h3>
-                                <p class="mt-1 text-sm text-gray-600">Please fill out the form to make a reimbursement
-                                    request.</p>
+                                <h3 class="text-lg font-medium leading-6 text-gray-900" id="form-title">Reimbursement Form</h3>
                             </div>
                             <div class="px-4 sm:px-0 mt-5">
 
-                                <a href="/home" onclick="route()" id="login_nav"
+                                <a href="/home" onclick="route()" id="request_link"
                                 class="text-blue-500">Request Reimbursement</a>
                             </div>
                             <div class="px-4 sm:px-0">
 
-                                <a href="/pending" onclick="getReimbursements()" id="login_nav"
+                                <a href="/pending" onclick="getReimbursements(event)" id="pending_link"
                                 class="text-blue-500">View Pending Reimbursements</a>
                             </div>
                             <div class="px-4 sm:px-0">
 
-                                <a href="" onclick="route()" id="login_nav"
+                                <a href="/resolved" onclick="getReimbursements(event)" id="resolved_link"
                                 class="text-blue-500">View Resolved Reimbursements</a>
                             </div>
                         </div>
-                        <div class="mt-5 md:mt-0 md:col-span-3 h-custom" id="inner-main-page">
+                        <div class="mt-5 lg:mt-0 md:col-span-3 min-h-custom" id="inner-main-page">
                             <form onsubmit="reimbFormHandler(event)">
                                 <div class="shadow sm:rounded-md sm:overflow-hidden">
                                     <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
@@ -65,17 +63,19 @@
                                                 reimbursement</p>
                                         </div>
 
-                                        <div class="col-span-6 sm:col-span-3">
-                                            <label for="reimbursement_type_id"
-                                                class="block text-sm font-medium text-gray-700">Reimbursement
-                                                Type</label>
-                                            <select id="reimbursement_type_id" name="reimbursement_type_id" autocomplete="country-name"
-                                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                <option value="1">Lodging</option>
-                                                <option value="2">Travel</option>
-                                                <option value="3">Food</option>
-                                                <option value="4">Other</option>
-                                            </select>
+                                        <div class="grid grid-cols-3 gap-6">
+                                            <div>
+                                                <label for="reimbursement_type_id"
+                                                    class="block text-sm font-medium text-gray-700">Reimbursement
+                                                    Type</label>
+                                                <select id="reimbursement_type_id" name="reimbursement_type_id" autocomplete="country-name"
+                                                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                    <option value="1">Lodging</option>
+                                                    <option value="2">Travel</option>
+                                                    <option value="3">Food</option>
+                                                    <option value="4">Other</option>
+                                                </select>
+                                            </div>
                                         </div>
 
                                         <div>
