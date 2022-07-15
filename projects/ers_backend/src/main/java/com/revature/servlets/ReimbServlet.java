@@ -23,7 +23,7 @@ import java.util.List;
 @MultipartConfig
 public class ReimbServlet extends HttpServlet {
     private final ReimbService reimbService = new ReimbService();
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

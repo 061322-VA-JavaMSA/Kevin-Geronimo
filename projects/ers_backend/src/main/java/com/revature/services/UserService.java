@@ -2,6 +2,7 @@ package com.revature.services;
 
 import com.revature.exceptions.UserNotCreatedException;
 import com.revature.exceptions.UserNotFoundException;
+import com.revature.models.ERSReimbursement;
 import com.revature.models.ERSUser;
 import com.revature.util.HibernateUtil;
 import org.hibernate.Session;
@@ -11,6 +12,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.List;
 
 public class UserService {
     public ERSUser createUser(ERSUser u) throws UserNotCreatedException {
@@ -30,18 +32,18 @@ public class UserService {
         return u;
     }
 
-    public ERSUser getUser(int id) throws UserNotFoundException {
-        ERSUser user;
-
-        try (Session s = HibernateUtil.getSessionFactory().openSession()) {
-            user = s.get(ERSUser.class, id);
-        }
-
-        if (user == null) {
-            throw new UserNotFoundException();
-        }
-        return user;
-    }
+//    public ERSUser getUser(int id) throws UserNotFoundException {
+//        ERSUser user;
+//
+//        try (Session s = HibernateUtil.getSessionFactory().openSession()) {
+//            user = s.get(ERSUser.class, id);
+//        }
+//
+//        if (user == null) {
+//            throw new UserNotFoundException();
+//        }
+//        return user;
+//    }
 
     public ERSUser getUser(String username) throws UserNotFoundException {
         ERSUser user;
@@ -60,5 +62,26 @@ public class UserService {
             throw new UserNotFoundException();
         }
         return user;
+    }
+
+    public List<ERSUser> getUsers() {
+        List<ERSUser> users = null;
+
+        try(Session s = HibernateUtil.getSessionFactory().openSession()){
+            users = s.createQuery("from ERSUser ", ERSUser.class).list();
+        }
+
+        return users;
+    }
+
+    public void updateUser(ERSUser user) {
+        try(Session s = HibernateUtil.getSessionFactory().openSession()){
+            Transaction tx = s.beginTransaction();
+            ERSUser u = s.get(ERSUser.class, user.getId());
+            u.setUsername(user.getUsername());
+            u.setPassword(user.getPassword());
+            s.update(u);
+            tx.commit();
+        }
     }
 }
