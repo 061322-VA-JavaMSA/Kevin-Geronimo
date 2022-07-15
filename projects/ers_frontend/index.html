@@ -5,6 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com/?plugins=forms"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    spacing: {
+                        'custom': '38rem',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body class="h-screen">
@@ -31,6 +42,8 @@
     </div>
     <script src="./scripts/router.js"></script>
     <script src="./scripts/login.js"></script>
+    <script src="./scripts/home.js"></script>
+    <script src="./scripts/pending.js"></script>
 </body>
 
 </html>
