@@ -1,8 +1,8 @@
-const route = (event) => {
+const route = async (event) => {
     event = event || window.event;
     event.preventDefault();
     window.history.pushState({}, "", event.target.href);
-    handleLocation();
+    await handleLocation();
 };
 
 const routes = {
@@ -11,7 +11,9 @@ const routes = {
     "/login": "/views/login.html",
     "/home": "/views/home.html",
     "/pending": "/views/pending.html",
-    "/resolved": "/views/resolved.html"
+    "/resolved": "/views/resolved.html",
+    "/profile": "/views/profile.html",
+    "/editprofile": "/views/editProfile.html"
 };
 
 const updateNav = (path) => {
@@ -50,6 +52,12 @@ const handleLocation = async () => {
     } else if (path === "/resolved") {
         document.getElementById("inner-main-page").innerHTML = html;
         document.getElementById('form-title').textContent = "Resolved Reimbursements";
+    } else if (path === "/profile") {
+        document.getElementById("inner-main-page").innerHTML = html;
+        document.getElementById('form-title').textContent = "Profile";
+    } else if (path === "/editprofile") {
+        document.getElementById("inner-main-page").innerHTML = html;
+        document.getElementById('form-title').textContent = "Update Profile";
     }
     else {
         document.getElementById("main-page").innerHTML = html;

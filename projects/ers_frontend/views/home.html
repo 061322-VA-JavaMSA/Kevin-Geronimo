@@ -29,6 +29,16 @@
                                 <a href="/resolved" onclick="getReimbursements(event)" id="resolved_link"
                                 class="text-blue-500">View Resolved Reimbursements</a>
                             </div>
+                            <div class="px-4 sm:px-0 mt-8">
+
+                                <a href="/profile" onclick="populateProfile()" id="profile_link"
+                                class="text-blue-500">View Profile</a>
+                            </div>
+                            <div class="px-4 sm:px-0">
+
+                                <a href="/editprofile" onclick="route()" id="edit_profile_link"
+                                class="text-blue-500">Edit Profile</a>
+                            </div>
                         </div>
                         <div class="mt-5 lg:mt-0 md:col-span-3 min-h-custom" id="inner-main-page">
                             <form onsubmit="reimbFormHandler(event)">
@@ -36,7 +46,7 @@
                                     <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                                         <div class="grid grid-cols-3 gap-6">
                                             <div>
-                                                <label for="number"
+                                                <label for="amount"
                                                     class="block text-sm font-medium text-gray-700">Amount</label>
                                                 <div class="mt-1 relative rounded-md shadow-sm">
                                                     <div

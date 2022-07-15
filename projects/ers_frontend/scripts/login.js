@@ -22,3 +22,19 @@ async function loginFormHandler(event) {
         console.log('Unable to login.')
     }
 };
+
+async function logout() {
+    let response = await fetch(`${apiUrl}/auth`, {
+        method: 'DELETE',
+        credentials: 'include'
+    });
+
+    if (response.status == 200) {
+        sessionStorage.clear();
+        principal = null;
+        window.history.pushState({}, "", "/");
+        handleLocation()
+    } else {
+        console.log('Unable to logout.')
+    }
+}

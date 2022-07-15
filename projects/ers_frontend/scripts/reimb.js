@@ -1,5 +1,5 @@
 async function getReimbursements(event){
-    route()
+    await route()
 
     let apiUrl = 'http://localhost:8080/ers/reimbursements';
     let response = await fetch(`${apiUrl}/reimbursements`, {
